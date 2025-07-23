@@ -163,8 +163,7 @@ let currentUsers = [];
 let checkboxStates = {};
 let currentIndex = 0;
 let counterValue = 0;
-let countedSet = new Set(); // track which indexes have already been counted
-
+let countedNavChecks = new Set(); // ONLY track what was checked in nav
 
 const listContainer = document.getElementById("userList");
 const currentNameEl = document.getElementById("currentUsername");
@@ -284,16 +283,16 @@ currentCheckbox.addEventListener("change", () => {
   const listCheckbox = document.querySelector(`.user-row input[data-index="${currentIndex}"]`);
   if (listCheckbox) listCheckbox.checked = isChecked;
 
-  if (isChecked && !countedSet.has(currentIndex)) {
+  // Only add +1 if just now checked in nav control and not already counted
+  if (isChecked && !countedNavChecks.has(currentIndex)) {
     counterValue++;
-    countedSet.add(currentIndex);
+    countedNavChecks.add(currentIndex);
   }
 
   updateCounter();
 });
 
 function updateCounter() {
-  counterValue = Object.values(checkboxStates).filter(v => v).length;
   counterEl.textContent = counterValue;
   counterEl.style.backgroundColor = counterValue >= 9 ? "red" : "green";
 }
@@ -331,9 +330,8 @@ function copyCheckboxStates() {
 
 function resetCounter() {
   counterValue = 0;
-  countedSet.clear();
-  counterEl.textContent = counterValue;
-  counterEl.style.backgroundColor = "green";
+  countedNavChecks.clear(); // Clear previous tracked checks
+  updateCounter();
 }
 
 function toast(msg) {
