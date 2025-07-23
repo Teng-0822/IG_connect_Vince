@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>IG Checkbox Copier</title>
+  <style>
+    html, body { touch-action: manipulation; }
+    button, input, label { touch-action: manipulation; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen;
+      padding: 16px;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    h2 { font-size: 18px; margin-bottom: 10px; }
+    button {
+      font-size: 16px;
+      padding: 10px 15px;
+      margin: 5px 5px 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #007aff;
+      color: white;
+      cursor: pointer;
+    }
+    .nav-btn {
+      padding: 20px 15px;
+      font-size: 18px;
+    }
+    button:hover { background-color: #005fc1; }
+    .user-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      margin-bottom: 5px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .user-row span {
+      flex: 1;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    .user-row button {
+      font-size: 14px;
+      padding: 6px 10px;
+      background-color: #34c759;
+    }
+    .user-row input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+    .highlight { background-color: #fff59d !important; }
+    #navControls {
+      position: fixed;
+      bottom: 20px;
+      right: 10px;
+      background: white;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 999;
+      height: 450px;
+      overflow-y: auto;
+    }
+    #currentUsername {
+      font-weight: bold;
+      font-size: 16px;
+      background-color: #e0e0e0;
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-align: center;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      line-height: 1.2;
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+      mask-image: linear-gradient(to top, transparent 0%, black 30%, black 70%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%, black 70%, transparent 100%);
+    }
+    label {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    label input[type="checkbox"] {
+      transform: scale(2.5);
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    #floatingCounter {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 70px;
+      height: 70px;
+      background-color: green;
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Instagram Users (From Google Sheet)</h2>
+  <button onclick="fetchFromGoogleSheet()">🔄 Reload Sheet</button>
+  <button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
+
+  <div id="navControls">
+    <button class="nav-btn" onclick="prevUser(); openCurrentIG()">⬅️</button>
+    <span id="currentUsername">—</span>
+    <button class="nav-btn" onclick="openCurrentIG()">IG</button>
+    <label><input type="checkbox" id="currentCheckbox"></label>
+    <button class="nav-btn" onclick="nextUser(); openCurrentIG()">➡️</button>
+  </div>
+
+  <div id="floatingCounter">0</div>
+  <div id="userList"></div>
+
+  <audio id="clickSound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRj4AAABXQVZFZm10IBAAAAABAAEAIlYAACJWAAABAAgAZGF0YW4AAACqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq==" type="audio/wav">
+  </audio>
+
+  <script>
+    let currentIndex = 0;
+    let currentUsers = [];
+    let checkboxStates = {};
+    let counterValue = 0;
+
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXnE6ctEnBVkCkzJ6CWdDaJDRNqry9i8wQex6EJGDLcE1cPq-LudJKSCjaOMunF-ONwoFiJHsF3ssB/pub?gid=0&single=true&output=csv"; // ← replace this!
+
+    const counterElement = document.getElementById("floatingCounter");
+    const navCheckbox = document.getElementById("currentCheckbox");
+
+    function updateCounterDisplay() {
+      counterElement.textContent = counterValue;
+      counterElement.style.backgroundColor = counterValue >= 9 ? "red" : "green";
+      localStorage.setItem("navCounter", counterValue);
+    }
+
+    navCheckbox.addEventListener("change", () => {
+      if (navCheckbox.checked) counterValue++;
+      else counterValue = Math.max(0, counterValue - 1);
+      checkboxStates[currentIndex] = navCheckbox.checked;
+      updateCounterDisplay();
+      const rowCheckbox = document.querySelector(`.user-row input[data-index="${currentIndex}"]`);
+      if (rowCheckbox) rowCheckbox.checked = navCheckbox.checked;
+    });
+
+    function fetchFromGoogleSheet() {
+      fetch(CSV_URL)
+        .then(res => res.text())
+        .then(csvText => {
+          const rows = csvText.trim().split("\n").slice(1);
+          const data = rows.map(row => {
+            const [username, checked] = row.split(",");
+            return {
+              username: username.trim(),
+              checked: (checked || "").trim().toUpperCase() === "TRUE"
+            };
+          });
+          renderUserList(data);
+        })
+        .catch(err => alert("Failed to load sheet: " + err));
+    }
+
+    function renderUserList(data) {
+      const container = document.getElementById("userList");
+      container.innerHTML = "";
+      currentUsers = data.map(u => u.username);
+      checkboxStates = {};
+      counterValue = 0;
+
+      data.forEach((item, index) => {
+        checkboxStates[index] = item.checked;
+        if (item.checked) counterValue++;
+
+        const row = document.createElement("div");
+        row.className = "user-row";
+        row.dataset.index = index;
+
+        const name = document.createElement("span");
+        name.textContent = item.username;
+
+        const btn = document.createElement("button");
+        btn.textContent = "Open IG";
+        btn.onclick = () => {
+          window.open(`https://instagram.com/${item.username}`, "_blank");
+          highlightRow(index);
+        };
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.dataset.index = index;
+        checkbox.checked = item.checked;
+
+        checkbox.addEventListener("change", () => {
+          checkboxStates[index] = checkbox.checked;
+          if (checkbox.checked) counterValue++;
+          else counterValue = Math.max(0, counterValue - 1);
+          updateCounterDisplay();
+          playClickSound();
+        });
+
+        row.appendChild(checkbox);
+        row.appendChild(btn);
+        row.appendChild(name);
+        container.appendChild(row);
+      });
+
+      currentIndex = 0;
+      updateCurrentView();
+      updateCounterDisplay();
+    }
+
+    function updateCurrentView() {
+      const username = currentUsers[currentIndex];
+      document.getElementById("currentUsername").textContent = username || "—";
+      navCheckbox.checked = checkboxStates[currentIndex] || false;
+    }
+
+    function highlightRow(index) {
+      document.querySelectorAll(".user-row").forEach(r => r.classList.remove("highlight"));
+      const target = document.querySelector(`.user-row[data-index="${index}"]`);
+      if (target) target.classList.add("highlight");
+    }
+
+    function prevUser() {
+      if (currentIndex > 0) currentIndex--;
+      updateCurrentView();
+    }
+
+    function nextUser() {
+      if (currentIndex < currentUsers.length - 1) currentIndex++;
+      updateCurrentView();
+    }
+
+    function openCurrentIG() {
+      const username = currentUsers[currentIndex];
+      if (username) {
+        window.open(`https://instagram.com/${username}`, "_blank");
+        highlightRow(currentIndex);
+      }
+    }
+
+    function copyCheckboxStates() {
+      const output = currentUsers.map((_, i) => checkboxStates[i] ? "TRUE" : "FALSE").join("\n");
+      navigator.clipboard.writeText(output).then(() => {
+        alert("Copied checkbox states (TRUE/FALSE). Paste into Sheets.");
+      });
+    }
+
+    function playClickSound() {
+      const clickSound = document.getElementById("clickSound");
+      if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+      }
+    }
+
+    window.onload = () => {
+      fetchFromGoogleSheet();
+      updateCounterDisplay();
+      document.querySelectorAll("button").forEach(btn =>
+        btn.addEventListener("click", playClickSound)
+      );
+      document.addEventListener("change", e => {
+        if (e.target.type === "checkbox") playClickSound();
+      });
+    };
+  </script>
+
+</body>
+</html>
