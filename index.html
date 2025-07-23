@@ -307,16 +307,9 @@ function copyCheckboxStates() {
 }
 
 function resetCounter() {
-  currentUsers.forEach((_, i) => {
-    checkboxStates[i] = false;
-    const checkbox = document.querySelector(`.user-row input[data-index="${i}"]`);
-    if (checkbox) checkbox.checked = false;
-  });
-  currentCheckbox.checked = false;
-  currentIndex = 0;
-  localStorage.setItem("currentIndex", currentIndex);
-  updateCounter();
-  updateCurrentView();
+  counterValue = 0;
+  counterEl.textContent = counterValue;
+  counterEl.style.backgroundColor = "green";
 }
 
 function toast(msg) {
