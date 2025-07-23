@@ -90,6 +90,7 @@
 <div id="userList">Loading...</div>
 <br>
 <button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
+<button onclick="pushToSheet()">🔼 Push to Sheet</button>
 
 <!-- Navigation Controls -->
 <div id="navControls">
@@ -109,7 +110,7 @@
 </audio>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycby2fLrM4QDxjacdSJXvQQGBSHTUE7V1c6YpcaEnTZhajUbtwM6f6PrZtDP3GLuQjLIarA/exec"; // <--- Replace with your real script URL
+const API_URL = "https://script.google.com/macros/s/AKfycbxbj4Kr3MoQKWQp1mezmJDRfPbbDPc5ta1_kQgxaanU/dev";
 let currentUsers = [];
 let checkboxStates = {};
 let currentIndex = 0;
@@ -155,7 +156,6 @@ async function generateList() {
     checkbox.addEventListener("change", () => {
       checkboxStates[index] = checkbox.checked;
       updateCounter();
-      saveToGoogleSheet();
     });
 
     const name = document.createElement("span");
@@ -209,7 +209,6 @@ currentCheckbox.addEventListener("change", () => {
   const listCheckbox = document.querySelector(`.user-row input[data-index="${currentIndex}"]`);
   if (listCheckbox) listCheckbox.checked = currentCheckbox.checked;
   updateCounter();
-  saveToGoogleSheet();
 });
 
 function updateCounter() {
@@ -218,26 +217,36 @@ function updateCounter() {
   counterEl.style.backgroundColor = counterValue >= 9 ? "red" : "green";
 }
 
-async function saveToGoogleSheet() {
+async function pushToSheet() {
   const updates = currentUsers.map((username, i) => ({
     username: username,
     checked: checkboxStates[i],
     row: i + 1
   }));
 
-  await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(updates),
-    headers: {
-      "Content-Type": "application/json"
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(updates),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (res.ok) {
+      alert("✅ Pushed successfully to Google Sheet!");
+    } else {
+      alert("❌ Failed to push. Check script permissions.");
     }
-  });
+  } catch (e) {
+    alert("❌ Push error: " + e.message);
+  }
 }
 
 function copyCheckboxStates() {
   const result = currentUsers.map((u, i) => checkboxStates[i] ? "TRUE" : "FALSE").join("\n");
   navigator.clipboard.writeText(result).then(() => {
-    alert("Copied to clipboard!");
+    alert("✅ Copied to clipboard!");
   });
 }
 
