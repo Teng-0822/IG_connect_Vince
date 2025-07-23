@@ -36,6 +36,10 @@
     button:hover {
       background: #005fc1;
     }
+    .nav-btn {
+      padding: 20px 15px;
+      font-size: 18px;
+    }
     #navControls {
       position: fixed;
       bottom: 20px;
@@ -49,7 +53,7 @@
       align-items: center;
       gap: 8px;
       z-index: 999;
-      height: 300px;
+      height: 450px;
       overflow-y: auto;
     }
     #currentUsername {
@@ -108,6 +112,11 @@
     .user-row.highlight {
       background-color: #fff59d !important; /* light yellow */
     }
+    label input[type="checkbox"] {
+      transform: scale(2.5);
+      margin-right: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -122,11 +131,11 @@
 
 <!-- Navigation Controls -->
 <div id="navControls">
-  <button onclick="pushToSheet(); prevUser(); openCurrentIG()">⬅️</button>
+  <button class="nav-btn" onclick="pushToSheet(); prevUser(); openCurrentIG()">⬅️</button>
   <span id="currentUsername">—</span>
-  <button onclick="openCurrentIG()">IG</button>
+  <button class="nav-btn" onclick="openCurrentIG()">IG</button>
   <label><input type="checkbox" id="currentCheckbox"></label>
-  <button onclick="pushToSheet(); nextUser(); openCurrentIG()">➡️</button>
+  <button class="nav-btn" onclick="pushToSheet(); nextUser(); openCurrentIG()">➡️</button>
 </div>
 
 <!-- Counter -->
