@@ -311,9 +311,13 @@ function copyCheckboxStates() {
 
 // ✅ Visual-only counter reset
 function resetCounter() {
-  toast("🔁 Counter visually reset!");
-  counterEl.textContent = "0";
-  counterEl.style.backgroundColor = "green";
+  counterValue = 0;
+  localStorage.setItem("navCounter", counterValue);
+  if (typeof updateCounterDisplay === "function") {
+    updateCounterDisplay();
+  } else if (typeof updateCounter === "function") {
+    updateCounter();
+  }
 }
 
 document.addEventListener("click", playClickSound);
