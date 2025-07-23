@@ -87,18 +87,17 @@
 <body>
 
 <h2>Instagram User List</h2>
-<div id="userList">Loading...</div>
-<br>
 <button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
 <button onclick="resetCounter()">🔄 Reset Count</button>
-
+<br>
+<div id="userList">Loading...</div>
 <!-- Navigation Controls -->
 <div id="navControls">
-  <button onclick="prevUser()">⬅️</button>
+  <button onclick="prevUser(); openCurrentIG()">⬅️</button>
   <span id="currentUsername">—</span>
   <button onclick="openCurrentIG()">IG</button>
   <label><input type="checkbox" id="currentCheckbox"></label>
-  <button onclick="nextUser()">➡️</button>
+  <button onclick="nextUser(); openCurrentIG()">➡️</button>
 </div>
 
 <!-- Counter -->
