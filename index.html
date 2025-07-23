@@ -163,6 +163,8 @@ let currentUsers = [];
 let checkboxStates = {};
 let currentIndex = 0;
 let counterValue = 0;
+let countedSet = new Set(); // track which indexes have already been counted
+
 
 const listContainer = document.getElementById("userList");
 const currentNameEl = document.getElementById("currentUsername");
@@ -201,9 +203,17 @@ async function generateList() {
     checkbox.checked = user.checked;
     checkbox.dataset.index = index;
     checkboxStates[index] = user.checked;
-
+    
+    // ✅ Modify to track counted checkboxes
     checkbox.addEventListener("change", () => {
       checkboxStates[index] = checkbox.checked;
+    
+      // Only add +1 if it was not already counted and now it's checked
+      if (checkbox.checked && !countedSet.has(index)) {
+        counterValue++;
+        countedSet.add(index);
+      }
+    
       updateCounter();
     });
 
@@ -268,9 +278,17 @@ function openCurrentIG() {
 }
 
 currentCheckbox.addEventListener("change", () => {
-  checkboxStates[currentIndex] = currentCheckbox.checked;
+  const isChecked = currentCheckbox.checked;
+  checkboxStates[currentIndex] = isChecked;
+
   const listCheckbox = document.querySelector(`.user-row input[data-index="${currentIndex}"]`);
-  if (listCheckbox) listCheckbox.checked = currentCheckbox.checked;
+  if (listCheckbox) listCheckbox.checked = isChecked;
+
+  if (isChecked && !countedSet.has(currentIndex)) {
+    counterValue++;
+    countedSet.add(currentIndex);
+  }
+
   updateCounter();
 });
 
@@ -313,6 +331,7 @@ function copyCheckboxStates() {
 
 function resetCounter() {
   counterValue = 0;
+  countedSet.clear();
   counterEl.textContent = counterValue;
   counterEl.style.backgroundColor = "green";
 }
