@@ -190,19 +190,47 @@ function updateCurrentView() {
 }
 
 function prevUser() {
+await pushSingleToSheet(currentIndex); // 👈 Push current checkbox state
   if (currentIndex > 0) {
     currentIndex--;
     updateCurrentView();
   }
 }
 
-function nextUser() {
+async function nextUser() {
+  await pushSingleToSheet(currentIndex); // 👈 Push current checkbox state
   if (currentIndex < currentUsers.length - 1) {
     currentIndex++;
     updateCurrentView();
   }
 }
 
+ async function pushSingleToSheet(index) {
+  const update = {
+    username: currentUsers[index],
+    checked: checkboxStates[index],
+    row: index + 1
+  };
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify([update]), // send as an array
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const result = await res.text();
+    if (!res.ok || !result.includes("Updated")) {
+      console.warn("❌ Push failed for index", index, result);
+    }
+  } catch (e) {
+    console.warn("❌ Push error at index", index, e.message);
+  }
+}
+ 
+  
 function openCurrentIG() {
   const username = currentUsers[currentIndex];
   if (username) {
