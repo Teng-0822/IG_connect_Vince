@@ -1,133 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IG Checkbox Copier</title>
+  <title>IG Checkbox Sync</title>
   <style>
     body {
       font-family: sans-serif;
-      margin: 20px;
+      padding: 16px;
+      background: #f0f0f0;
     }
     .user-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-      background: #f1f1f1;
+      background: white;
       padding: 10px;
-      border-radius: 8px;
-    }
-    .user-row button {
-      padding: 4px 10px;
-    }
-    #floatingCounter {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 60px;
-      height: 60px;
-      background-color: green;
-      color: white;
-      font-size: 24px;
-      font-weight: bold;
-      border-radius: 50%;
+      margin-bottom: 5px;
       display: flex;
-      justify-content: center;
       align-items: center;
-      z-index: 999;
+      justify-content: space-between;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .user-row span {
+      flex: 1;
+      margin-left: 10px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #007aff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fc1;
     }
   </style>
 </head>
 <body>
 
-<h2>IG Checkbox Copier (Google Sheet Sync)</h2>
-<button onclick="loadFromSheet()">🔄 Reload</button>
-<div id="userList"></div>
-<div id="floatingCounter">0</div>
+<h2>Instagram User List</h2>
+<div id="userList">Loading...</div>
+<button onclick="saveToGoogleSheet()">Save to Sheet</button>
 
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXnE6ctEnBVkCkzJ6CWdDaJDRNqry9i8wQex6EJGDLcE1cPq-LudJKSCjaOMunF-ONwoFjJHsF3ssB/pub?gid=0&single=true&output=csv";
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMD27JCd6tgWVsMWE6e-54mzwbS73cl_tiM-skbcBCXkKeCeUtoDOsG3MH6rD-UxMsCg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxMD27JCd6tgWVsMWE6e-54mzwbS73cl_tiM-skbcBCXkKeCeUtoDOsG3MH6rD-UxMsCg/exec"; // <-- Replace this with your Apps Script URL
+let currentUsers = [];
+let checkboxStates = {};
 
-let users = [];
-let states = {};
-let counter = 0;
+async function generateList() {
+  const res = await fetch(API_URL);
+  const users = await res.json();
 
-function loadFromSheet() {
-  fetch(CSV_URL)
-    .then(res => res.text())
-    .then(csv => {
-      const lines = csv.trim().split('\n').slice(1); // skip header
-      users = lines.map(row => {
-        const [username, checked] = row.split(',');
-        return { username: username.trim(), checked: checked.trim().toUpperCase() === "TRUE" };
-      });
-      renderUsers();
-    })
-    .catch(err => alert("❌ Failed to load: " + err));
-}
-
-function renderUsers() {
-  const list = document.getElementById("userList");
-  list.innerHTML = "";
-  states = {};
-  counter = 0;
+  const container = document.getElementById("userList");
+  container.innerHTML = "";
+  currentUsers = users.map(u => u.username);
 
   users.forEach((user, index) => {
     const row = document.createElement("div");
     row.className = "user-row";
 
-    const name = document.createElement("span");
-    name.textContent = user.username;
-
-    const openBtn = document.createElement("button");
-    openBtn.textContent = "Open IG";
-    openBtn.onclick = () => window.open(`https://instagram.com/${user.username}`, "_blank");
-
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = user.checked;
-    states[index] = user.checked;
-    if (user.checked) counter++;
+    checkbox.dataset.index = index;
+
+    checkboxStates[index] = user.checked;
 
     checkbox.addEventListener("change", () => {
-      states[index] = checkbox.checked;
-      if (checkbox.checked) counter++;
-      else counter--;
-      updateCounter();
-      syncToSheet(user.username, checkbox.checked);
+      checkboxStates[index] = checkbox.checked;
+      saveToGoogleSheet(); // auto-save
     });
 
+    const name = document.createElement("span");
+    name.textContent = user.username;
+
+    const btn = document.createElement("button");
+    btn.textContent = "Open IG";
+    btn.onclick = () => {
+      window.open(`https://instagram.com/${user.username}`, "_blank");
+    };
+
     row.appendChild(checkbox);
-    row.appendChild(openBtn);
     row.appendChild(name);
-    list.appendChild(row);
+    row.appendChild(btn);
+
+    container.appendChild(row);
   });
-
-  updateCounter();
 }
 
-function updateCounter() {
-  document.getElementById("floatingCounter").textContent = counter;
-  const counterEl = document.getElementById("floatingCounter");
-  counterEl.style.backgroundColor = counter >= 9 ? "red" : "green";
-}
+async function saveToGoogleSheet() {
+  const updates = currentUsers.map((username, i) => ({
+    username: username,
+    checked: checkboxStates[i],
+    row: i + 1
+  }));
 
-function syncToSheet(username, checked) {
-  fetch(APPS_SCRIPT_URL, {
+  await fetch(API_URL, {
     method: "POST",
-    body: JSON.stringify({ username, checked }),
+    body: JSON.stringify(updates),
     headers: {
       "Content-Type": "application/json"
     }
-  })
-  .then(res => res.text())
-  .then(msg => console.log("✅ Synced:", msg))
-  .catch(err => console.error("❌ Sync error:", err));
+  }).then(() => {
+    console.log("Saved");
+  }).catch(err => {
+    alert("Error saving to Google Sheets: " + err.message);
+  });
 }
 
-window.onload = loadFromSheet;
+window.onload = generateList;
 </script>
-
 </body>
 </html>
