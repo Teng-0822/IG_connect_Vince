@@ -96,11 +96,11 @@
 
 <!-- Navigation Controls -->
 <div id="navControls">
-  <button onclick="prevUser()">⬅️</button>
+  <button onclick="prevUser(); openCurrentIG()">⬅️</button>
   <span id="currentUsername">—</span>
   <button onclick="openCurrentIG()">IG</button>
   <label><input type="checkbox" id="currentCheckbox"></label>
-  <button onclick="nextUser()">➡️</button>
+  <button onclick="nextUser(); openCurrentIG()">➡️</button>
 </div>
 
 <!-- Counter -->
