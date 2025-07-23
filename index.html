@@ -214,6 +214,11 @@ async function generateList() {
     btn.textContent = "Open IG";
     btn.onclick = () => {
       window.open(`https://instagram.com/${user.username}`, "_blank");
+    
+      // Make this the selected user
+      currentIndex = index;
+      localStorage.setItem("currentIndex", currentIndex);
+      updateCurrentView();
     };
 
     row.appendChild(checkbox);
