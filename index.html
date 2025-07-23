@@ -153,10 +153,9 @@
 </audio>
 
 <script>
+
 const RAW_API = "https://script.google.com/macros/s/AKfycbzuhqBYLvz26q9DaxpE3QLzuAqg1T2oHDxAsg6-4ZIzygzMQ-lIGalEwbTfrFwpxsYJ/exec";
 const API_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_API);
-  //const API_URL = "https://script.google.com/macros/s/AKfycbzuhqBYLvz26q9DaxpE3QLzuAqg1T2oHDxAsg6-4ZIzygzMQ-lIGalEwbTfrFwpxsYJ/exec";
-
 
 let currentUsers = [];
 let checkboxStates = {};
@@ -232,12 +231,10 @@ function updateCurrentView() {
   currentNameEl.textContent = username;
   currentCheckbox.checked = checkboxStates[currentIndex] || false;
 
-  // Remove old highlights
   document.querySelectorAll(".user-row").forEach(row => {
     row.classList.remove("highlight");
   });
 
-  // Add highlight to current row
   const currentRow = document.querySelector(`.user-row input[data-index="${currentIndex}"]`)?.parentElement;
   if (currentRow) {
     currentRow.classList.add("highlight");
@@ -312,9 +309,11 @@ function copyCheckboxStates() {
   });
 }
 
+// ✅ Visual-only counter reset
 function resetCounter() {
-  counterValue = 0;
-  updateCounter();
+  toast("🔁 Counter visually reset!");
+  counterEl.textContent = "0";
+  counterEl.style.backgroundColor = "green";
 }
 
 document.addEventListener("click", playClickSound);
@@ -329,19 +328,19 @@ function playClickSound() {
     snd.play().catch(() => {});
   }
 }
-const resetBtn = document.createElement("button");
-  resetBtn.textContent = "🔄";
-  resetBtn.onclick = () => {
-    counterValue = 0;
-    updateCounter();
-  };
-  document.querySelector("button[onclick='generateList()']").after(resetBtn);
 
-  // Show correct value on load
-  updateCounter();
+// Create and attach reset icon button visually
+const resetBtn = document.createElement("button");
+resetBtn.textContent = "🔄";
+resetBtn.onclick = resetCounter;
+document.querySelector("button[onclick='generateList()']").after(resetBtn);
+
+// Initial counter display
+updateCounter();
 
 window.onload = generateList;
 </script>
+
 
 </body>
 </html>
