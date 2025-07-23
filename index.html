@@ -87,11 +87,12 @@
 <body>
 
 <h2>Instagram User List</h2>
-<div id="userList">Loading...</div>
+<div id="userList">🔃 Loading data...</div>
 <br>
 <button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
 <button onclick="pushToSheet()">🔼 Push to Sheet</button>
 <button onclick="resetCounter()">🔄 Reset Count</button>
+<button onclick="generateList()">🔃 Fetch</button> <!-- ✅ FETCH BUTTON -->
 
 <!-- Navigation Controls -->
 <div id="navControls">
@@ -112,7 +113,7 @@
 
 <script>
 const RAW_API = "https://script.google.com/macros/s/AKfycbxIv_GXdfYAY_vdJLzQ5y8uunDa3XvORxwe00WF4S09Qv1T8fklDqNUZF1d-TjKGCyW_w/exec";
-const API_URL = RAW_API;
+const API_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_API);
 
 let currentUsers = [];
 let checkboxStates = {};
@@ -125,9 +126,13 @@ const currentCheckbox = document.getElementById("currentCheckbox");
 const counterEl = document.getElementById("floatingCounter");
 
 async function generateList() {
+  listContainer.innerHTML = "🔃 Fetching data...";
   let users = [];
   try {
-    const res = await fetch(API_URL);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(API_URL, { signal: controller.signal });
+    clearTimeout(timeoutId);
     users = await res.json();
   } catch (e) {
     listContainer.innerHTML = `<p style="color:red;">❌ Failed to load users: ${e.message}</p>`;
@@ -141,6 +146,7 @@ async function generateList() {
 
   listContainer.innerHTML = "";
   currentUsers = users.map(u => u.username);
+  checkboxStates = {};
 
   users.forEach((user, index) => {
     const row = document.createElement("div");
@@ -172,6 +178,7 @@ async function generateList() {
     listContainer.appendChild(row);
   });
 
+  currentIndex = 0;
   updateCurrentView();
   updateCounter();
 }
@@ -250,21 +257,22 @@ function copyCheckboxStates() {
   });
 }
 
+function resetCounter() {
+  counterValue = 0;
+  updateCounter();
+}
+
 document.addEventListener("click", playClickSound);
 document.addEventListener("change", e => {
   if (e.target.type === "checkbox") playClickSound();
 });
+
 function playClickSound() {
   const snd = document.getElementById("clickSound");
   if (snd) {
     snd.currentTime = 0;
     snd.play().catch(() => {});
   }
-}
-
-function resetCounter() {
-  counterValue = 0;
-  updateCounter();
 }
 
 window.onload = generateList;
