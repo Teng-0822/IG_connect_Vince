@@ -87,11 +87,12 @@
 <body>
 
 <h2>Instagram User List</h2>
-<div id="userList">Loading...</div>
+<div id="userList">🔃 Loading data...</div>
 <br>
 <button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
 <button onclick="pushToSheet()">🔼 Push to Sheet</button>
 <button onclick="resetCounter()">🔄 Reset Count</button>
+<button onclick="generateList()">🔃 Fetch</button> <!-- ✅ FETCH BUTTON -->
 
 <!-- Navigation Controls -->
 <div id="navControls">
@@ -110,7 +111,6 @@
   <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YaQAAACAgICAgICAgICAgICAgICAf39/f39/f39/f3+AgICAgICAgICAf3+AgICAf3+AgICAgICAgH9/f3+AgH9/f3+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=" type="audio/wav">
 </audio>
 
-
 <script>
 const RAW_API = "https://script.google.com/macros/s/AKfycbxIv_GXdfYAY_vdJLzQ5y8uunDa3XvORxwe00WF4S09Qv1T8fklDqNUZF1d-TjKGCyW_w/exec";
 const API_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_API);
@@ -126,6 +126,7 @@ const currentCheckbox = document.getElementById("currentCheckbox");
 const counterEl = document.getElementById("floatingCounter");
 
 async function generateList() {
+  listContainer.innerHTML = "🔃 Fetching data...";
   let users = [];
   try {
     const controller = new AbortController();
@@ -145,6 +146,7 @@ async function generateList() {
 
   listContainer.innerHTML = "";
   currentUsers = users.map(u => u.username);
+  checkboxStates = {};
 
   users.forEach((user, index) => {
     const row = document.createElement("div");
@@ -176,6 +178,7 @@ async function generateList() {
     listContainer.appendChild(row);
   });
 
+  currentIndex = 0;
   updateCurrentView();
   updateCounter();
 }
@@ -254,11 +257,16 @@ function copyCheckboxStates() {
   });
 }
 
-// Click sound
+function resetCounter() {
+  counterValue = 0;
+  updateCounter();
+}
+
 document.addEventListener("click", playClickSound);
 document.addEventListener("change", e => {
   if (e.target.type === "checkbox") playClickSound();
 });
+
 function playClickSound() {
   const snd = document.getElementById("clickSound");
   if (snd) {
@@ -266,10 +274,7 @@ function playClickSound() {
     snd.play().catch(() => {});
   }
 }
-function resetCounter() {
-  counterValue = 0;
-  updateCounter();
-}
+
 window.onload = generateList;
 </script>
 
