@@ -91,6 +91,7 @@
 <button onclick="resetCounter()">🔄 Reset Count</button>
 <br>
 <div id="userList">Loading...</div>
+
 <!-- Navigation Controls -->
 <div id="navControls">
   <button onclick="prevUser(); openCurrentIG()">⬅️</button>
@@ -110,7 +111,7 @@
 
 <script>
 const RAW_API = "https://script.google.com/macros/s/AKfycbxIv_GXdfYAY_vdJLzQ5y8uunDa3XvORxwe00WF4S09Qv1T8fklDqNUZF1d-TjKGCyW_w/exec";
-const API_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_API);
+const API_URL = RAW_API; // direct fetch for performance
 
 let currentUsers = [];
 let checkboxStates = {};
@@ -125,10 +126,7 @@ const counterEl = document.getElementById("floatingCounter");
 async function generateList() {
   let users = [];
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
-    const res = await fetch(API_URL, { signal: controller.signal });
-    clearTimeout(timeoutId);
+    const res = await fetch(API_URL);
     users = await res.json();
   } catch (e) {
     listContainer.innerHTML = `<p style="color:red;">❌ Failed to load users: ${e.message}</p>`;
@@ -226,18 +224,12 @@ async function pushSingleToSheet(index) {
   };
 
   try {
-    const res = await fetch(API_URL, {
+    await fetch(API_URL, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify([update]),
-      headers: {
-        "Content-Type": "application/json"
-      }
+      cache: "no-store"
     });
-
-    const result = await res.text();
-    if (!res.ok || !result.includes("Updated")) {
-      console.warn("❌ Push failed for index", index, result);
-    }
   } catch (e) {
     console.warn("❌ Push error at index", index, e.message);
   }
