@@ -87,20 +87,20 @@
 <body>
 
 <h2>Instagram User List</h2>
-<div id="userList">🔃 Loading data...</div>
-<br>
 <button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
 <button onclick="pushToSheet()">🔼 Push to Sheet</button>
 <button onclick="resetCounter()">🔄 Reset Count</button>
 <button onclick="generateList()">🔃 Fetch</button> <!-- ✅ FETCH BUTTON -->
+<br>
+<div id="userList">🔃 Loading data...</div>
 
 <!-- Navigation Controls -->
 <div id="navControls">
-  <button onclick="prevUser()">⬅️</button>
+  <button onclick="prevUser(); pushToSheet()">⬅️</button>
   <span id="currentUsername">—</span>
   <button onclick="openCurrentIG()">IG</button>
   <label><input type="checkbox" id="currentCheckbox"></label>
-  <button onclick="nextUser()">➡️</button>
+  <button onclick="nextUser(); pushToSheet()">➡️</button>
 </div>
 
 <!-- Counter -->
