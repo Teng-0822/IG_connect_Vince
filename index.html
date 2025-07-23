@@ -87,20 +87,18 @@
 <body>
 
 <h2>Instagram User List</h2>
-<div id="userList">🔃 Loading data...</div>
+<div id="userList">Loading...</div>
 <br>
 <button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
-<button onclick="pushToSheet()">🔼 Push to Sheet</button>
 <button onclick="resetCounter()">🔄 Reset Count</button>
-<button onclick="generateList()">🔃 Fetch</button> <!-- ✅ FETCH BUTTON -->
 
 <!-- Navigation Controls -->
 <div id="navControls">
-  <button onclick="prevUser(); openCurrentIG()">⬅️</button>
+  <button onclick="prevUser()">⬅️</button>
   <span id="currentUsername">—</span>
   <button onclick="openCurrentIG()">IG</button>
   <label><input type="checkbox" id="currentCheckbox"></label>
-  <button onclick="nextUser(); openCurrentIG()">➡️</button>
+  <button onclick="nextUser()">➡️</button>
 </div>
 
 <!-- Counter -->
@@ -126,7 +124,6 @@ const currentCheckbox = document.getElementById("currentCheckbox");
 const counterEl = document.getElementById("floatingCounter");
 
 async function generateList() {
-  listContainer.innerHTML = "🔃 Fetching data...";
   let users = [];
   try {
     const controller = new AbortController();
@@ -146,7 +143,6 @@ async function generateList() {
 
   listContainer.innerHTML = "";
   currentUsers = users.map(u => u.username);
-  checkboxStates = {};
 
   users.forEach((user, index) => {
     const row = document.createElement("div");
@@ -178,7 +174,6 @@ async function generateList() {
     listContainer.appendChild(row);
   });
 
-  currentIndex = 0;
   updateCurrentView();
   updateCounter();
 }
@@ -190,7 +185,6 @@ function updateCurrentView() {
 }
 
 function prevUser() {
-await pushSingleToSheet(currentIndex); // 👈 Push current checkbox state
   if (currentIndex > 0) {
     currentIndex--;
     updateCurrentView();
@@ -198,39 +192,13 @@ await pushSingleToSheet(currentIndex); // 👈 Push current checkbox state
 }
 
 async function nextUser() {
-  await pushSingleToSheet(currentIndex); // 👈 Push current checkbox state
+  await pushSingleToSheet(currentIndex);
   if (currentIndex < currentUsers.length - 1) {
     currentIndex++;
     updateCurrentView();
   }
 }
 
- async function pushSingleToSheet(index) {
-  const update = {
-    username: currentUsers[index],
-    checked: checkboxStates[index],
-    row: index + 1
-  };
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify([update]), // send as an array
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-
-    const result = await res.text();
-    if (!res.ok || !result.includes("Updated")) {
-      console.warn("❌ Push failed for index", index, result);
-    }
-  } catch (e) {
-    console.warn("❌ Push error at index", index, e.message);
-  }
-}
- 
-  
 function openCurrentIG() {
   const username = currentUsers[currentIndex];
   if (username) {
@@ -251,30 +219,28 @@ function updateCounter() {
   counterEl.style.backgroundColor = counterValue >= 9 ? "red" : "green";
 }
 
-async function pushToSheet() {
-  const updates = currentUsers.map((username, i) => ({
-    username: username,
-    checked: checkboxStates[i],
-    row: i + 1
-  }));
+async function pushSingleToSheet(index) {
+  const update = {
+    username: currentUsers[index],
+    checked: checkboxStates[index],
+    row: index + 1
+  };
 
   try {
     const res = await fetch(API_URL, {
       method: "POST",
-      body: JSON.stringify(updates),
+      body: JSON.stringify([update]),
       headers: {
         "Content-Type": "application/json"
       }
     });
 
     const result = await res.text();
-    if (res.ok && result.includes("Updated")) {
-      alert("✅ Pushed successfully to Google Sheet!");
-    } else {
-      alert("❌ Push failed: " + result);
+    if (!res.ok || !result.includes("Updated")) {
+      console.warn("❌ Push failed for index", index, result);
     }
   } catch (e) {
-    alert("❌ Push error: " + e.message);
+    console.warn("❌ Push error at index", index, e.message);
   }
 }
 
@@ -285,22 +251,21 @@ function copyCheckboxStates() {
   });
 }
 
-function resetCounter() {
-  counterValue = 0;
-  updateCounter();
-}
-
 document.addEventListener("click", playClickSound);
 document.addEventListener("change", e => {
   if (e.target.type === "checkbox") playClickSound();
 });
-
 function playClickSound() {
   const snd = document.getElementById("clickSound");
   if (snd) {
     snd.currentTime = 0;
     snd.play().catch(() => {});
   }
+}
+
+function resetCounter() {
+  counterValue = 0;
+  updateCounter();
 }
 
 window.onload = generateList;
