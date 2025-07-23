@@ -141,7 +141,8 @@
     let checkboxStates = {};
     let counterValue = 0;
 
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXnE6ctEnBVkCkzJ6CWdDaJDRNqry9i8wQex6EJGDLcE1cPq-LudJKSCjaOMunF-ONwoFiJHsF3ssB/pub?gid=0&single=true&output=csv"; // ← replace this!
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTXnE6ctEnBVkCkzJ6CWdDaJDRNqry9i8wQex6EJGDLcE1cPq-LudJKSCjaOMunF-ONwoFjJHsF3ssB/pub?gid=0&single=true&output=csv";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMD27JCd6tgWVsMWE6e-54mzwbS73cl_tiM-skbcBCXkKeCeUtoDOsG3MH6rD-UxMsCg/exec";
 
     const counterElement = document.getElementById("floatingCounter");
     const navCheckbox = document.getElementById("currentCheckbox");
@@ -149,7 +150,6 @@
     function updateCounterDisplay() {
       counterElement.textContent = counterValue;
       counterElement.style.backgroundColor = counterValue >= 9 ? "red" : "green";
-      localStorage.setItem("navCounter", counterValue);
     }
 
     navCheckbox.addEventListener("change", () => {
@@ -159,6 +159,7 @@
       updateCounterDisplay();
       const rowCheckbox = document.querySelector(`.user-row input[data-index="${currentIndex}"]`);
       if (rowCheckbox) rowCheckbox.checked = navCheckbox.checked;
+      updateSheetCheckbox(currentUsers[currentIndex], navCheckbox.checked);
     });
 
     function fetchFromGoogleSheet() {
@@ -214,9 +215,8 @@
           else counterValue = Math.max(0, counterValue - 1);
           updateCounterDisplay();
           playClickSound();
-          updateSheetCheckbox(currentUsers[index], checkbox.checked);
+          updateSheetCheckbox(item.username, checkbox.checked);
         });
-
 
         row.appendChild(checkbox);
         row.appendChild(btn);
@@ -274,6 +274,19 @@
       }
     }
 
+    function updateSheetCheckbox(username, checked) {
+      fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ username, checked }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.text())
+      .then(msg => console.log("✅ Sheet updated:", msg))
+      .catch(err => console.error("❌ Failed to update sheet:", err));
+    }
+
     window.onload = () => {
       fetchFromGoogleSheet();
       updateCounterDisplay();
@@ -284,21 +297,6 @@
         if (e.target.type === "checkbox") playClickSound();
       });
     };
-
-    function updateSheetCheckbox(username, checked) {
-        const url = "https://script.google.com/macros/s/AKfycbxMD27JCd6tgWVsMWE6e-54mzwbS73cl_tiM-skbcBCXkKeCeUtoDOsG3MH6rD-UxMsCg/exec"; // ← Replace with your deployed Apps Script URL
-      
-        fetch(url, {
-          method: "POST",
-          body: JSON.stringify({ username, checked }),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        })
-        .then(res => res.text())
-        .then(msg => console.log("✅ Sheet updated:", msg))
-        .catch(err => console.error("❌ Failed to update sheet:", err));
-      }
   </script>
 
 </body>
