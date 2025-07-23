@@ -91,6 +91,7 @@
 <br>
 <button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
 <button onclick="pushToSheet()">🔼 Push to Sheet</button>
+<button onclick="resetCounter()">🔄 Reset Count</button>
 
 <!-- Navigation Controls -->
 <div id="navControls">
@@ -264,7 +265,10 @@ function playClickSound() {
     snd.play().catch(() => {});
   }
 }
-
+function resetCounter() {
+  counterValue = 0;
+  updateCounter();
+}
 window.onload = generateList;
 </script>
 
