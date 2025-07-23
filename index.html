@@ -110,13 +110,14 @@
 </audio>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxIv_GXdfYAY_vdJLzQ5y8uunDa3XvORxwe00WF4S09Qv1T8fklDqNUZF1d-TjKGCyW_w/exec";
+const RAW_API = "https://script.google.com/macros/s/AKfycbxIv_GXdfYAY_vdJLzQ5y8uunDa3XvORxwe00WF4S09Qv1T8fklDqNUZF1d-TjKGCyW_w/exec";
+const API_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_API);
+
 let currentUsers = [];
 let checkboxStates = {};
 let currentIndex = 0;
 let counterValue = 0;
 
-// DOM
 const listContainer = document.getElementById("userList");
 const currentNameEl = document.getElementById("currentUsername");
 const currentCheckbox = document.getElementById("currentCheckbox");
@@ -126,7 +127,7 @@ async function generateList() {
   let users = [];
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(API_URL, { signal: controller.signal });
     clearTimeout(timeoutId);
     users = await res.json();
@@ -233,10 +234,11 @@ async function pushToSheet() {
       }
     });
 
-    if (res.ok) {
+    const result = await res.text();
+    if (res.ok && result.includes("Updated")) {
       alert("✅ Pushed successfully to Google Sheet!");
     } else {
-      alert("❌ Failed to push. Check script permissions.");
+      alert("❌ Push failed: " + result);
     }
   } catch (e) {
     alert("❌ Push error: " + e.message);
@@ -250,7 +252,7 @@ function copyCheckboxStates() {
   });
 }
 
-// Click sounds
+// Click sound
 document.addEventListener("click", playClickSound);
 document.addEventListener("change", e => {
   if (e.target.type === "checkbox") playClickSound();
