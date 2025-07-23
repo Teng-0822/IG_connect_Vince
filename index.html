@@ -105,6 +105,9 @@
       opacity: 1;
       transition-delay: 0s;
     }
+    .user-row.highlight {
+      background-color: #fff59d !important; /* light yellow */
+    }
   </style>
 </head>
 <body>
@@ -210,6 +213,17 @@ function updateCurrentView() {
   const username = currentUsers[currentIndex] || "—";
   currentNameEl.textContent = username;
   currentCheckbox.checked = checkboxStates[currentIndex] || false;
+
+  // Remove old highlights
+  document.querySelectorAll(".user-row").forEach(row => {
+    row.classList.remove("highlight");
+  });
+
+  // Add highlight to current row
+  const currentRow = document.querySelector(`.user-row input[data-index="${currentIndex}"]`)?.parentElement;
+  if (currentRow) {
+    currentRow.classList.add("highlight");
+  }
 }
 
 function prevUser() {
