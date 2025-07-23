@@ -169,6 +169,7 @@ async function generateList() {
     const res = await fetch(API_URL, { signal: controller.signal });
     clearTimeout(timeoutId);
     users = await res.json();
+    console.log("✅ Total users fetched:", users.length);
   } catch (e) {
     listContainer.innerHTML = `<p style="color:red;">❌ Failed to load users: ${e.message}</p>`;
     return;
