@@ -116,7 +116,7 @@
       transition-delay: 0s;
     }
     .user-row.highlight {
-      background-color: #fff59d !important; /* light yellow */
+      background-color: #fff59d !important;
     }
     label input[type="checkbox"] {
       transform: scale(2.5);
@@ -131,7 +131,7 @@
 <button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
 <button onclick="pushToSheet()">🔼 Push to Sheet</button>
 <button onclick="resetCounter()">🔄 Reset Count</button>
-<button onclick="generateList()">🔃 Fetch</button> <!-- ✅ FETCH BUTTON -->
+<button onclick="generateList()">🔃 Fetch</button>
 <br>
 <div id="userList">🔃 Loading data...</div>
 
@@ -147,13 +147,15 @@
 <!-- Counter -->
 <div id="floatingCounter">0</div>
 
+<!-- Toast -->
+<div id="toast">Toast</div>
+
 <!-- Sound -->
 <audio id="clickSound" preload="auto">
   <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YaQAAACAgICAgICAgICAgICAgICAf39/f39/f39/f3+AgICAgICAgICAf3+AgICAf3+AgICAgICAgH9/f3+AgH9/f3+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=" type="audio/wav">
 </audio>
 
 <script>
-
 const RAW_API = "https://script.google.com/macros/s/AKfycbzuhqBYLvz26q9DaxpE3QLzuAqg1T2oHDxAsg6-4ZIzygzMQ-lIGalEwbTfrFwpxsYJ/exec";
 const API_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_API);
 
@@ -176,7 +178,6 @@ async function generateList() {
     const res = await fetch(API_URL, { signal: controller.signal });
     clearTimeout(timeoutId);
     users = await res.json();
-    console.log("✅ Total users fetched:", users.length);
   } catch (e) {
     listContainer.innerHTML = `<p style="color:red;">❌ Failed to load users: ${e.message}</p>`;
     return;
@@ -221,7 +222,9 @@ async function generateList() {
     listContainer.appendChild(row);
   });
 
-  currentIndex = 0;
+  const savedIndex = parseInt(localStorage.getItem("currentIndex"));
+  currentIndex = isNaN(savedIndex) ? 0 : savedIndex;
+
   updateCurrentView();
   updateCounter();
 }
@@ -231,19 +234,15 @@ function updateCurrentView() {
   currentNameEl.textContent = username;
   currentCheckbox.checked = checkboxStates[currentIndex] || false;
 
-  document.querySelectorAll(".user-row").forEach(row => {
-    row.classList.remove("highlight");
-  });
-
+  document.querySelectorAll(".user-row").forEach(row => row.classList.remove("highlight"));
   const currentRow = document.querySelector(`.user-row input[data-index="${currentIndex}"]`)?.parentElement;
-  if (currentRow) {
-    currentRow.classList.add("highlight");
-  }
+  if (currentRow) currentRow.classList.add("highlight");
 }
 
 function prevUser() {
   if (currentIndex > 0) {
     currentIndex--;
+    localStorage.setItem("currentIndex", currentIndex);
     updateCurrentView();
   }
 }
@@ -251,6 +250,7 @@ function prevUser() {
 function nextUser() {
   if (currentIndex < currentUsers.length - 1) {
     currentIndex++;
+    localStorage.setItem("currentIndex", currentIndex);
     updateCurrentView();
   }
 }
@@ -286,19 +286,16 @@ async function pushToSheet() {
     const res = await fetch(API_URL, {
       method: "POST",
       body: JSON.stringify(updates),
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: { "Content-Type": "application/json" }
     });
-
     const result = await res.text();
     if (res.ok && result.includes("Updated")) {
       toast("✅ Pushed successfully to Google Sheet!");
     } else {
-      toast("❌ Push failed: but success ");
+      toast("❌ Push failed");
     }
   } catch (e) {
-    toast("❌ Push error: but pasted ");
+    toast("❌ Push error");
   }
 }
 
@@ -309,15 +306,26 @@ function copyCheckboxStates() {
   });
 }
 
-// ✅ Visual-only counter reset
 function resetCounter() {
-  counterValue = 0;
-  localStorage.setItem("navCounter", counterValue);
-  if (typeof updateCounterDisplay === "function") {
-    updateCounterDisplay();
-  } else if (typeof updateCounter === "function") {
-    updateCounter();
-  }
+  currentUsers.forEach((_, i) => {
+    checkboxStates[i] = false;
+    const checkbox = document.querySelector(`.user-row input[data-index="${i}"]`);
+    if (checkbox) checkbox.checked = false;
+  });
+  currentCheckbox.checked = false;
+  currentIndex = 0;
+  localStorage.setItem("currentIndex", currentIndex);
+  updateCounter();
+  updateCurrentView();
+}
+
+function toast(msg) {
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.className = "show";
+  setTimeout(() => {
+    toast.className = toast.className.replace("show", "");
+  }, 3000);
 }
 
 document.addEventListener("click", playClickSound);
@@ -333,18 +341,9 @@ function playClickSound() {
   }
 }
 
-// Create and attach reset icon button visually
-const resetBtn = document.createElement("button");
-resetBtn.textContent = "🔄";
-resetBtn.onclick = resetCounter;
-document.querySelector("button[onclick='generateList()']").after(resetBtn);
-
-// Initial counter display
 updateCounter();
-
 window.onload = generateList;
 </script>
-
 
 </body>
 </html>
