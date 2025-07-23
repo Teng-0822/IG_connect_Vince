@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IG Checkbox Sync</title>
   <style>
+    html, body {
+      touch-action: manipulation;
+    }
+    button, input, label {
+      touch-action: manipulation;
+    }
     body {
       font-family: sans-serif;
       padding: 16px;
@@ -323,6 +329,16 @@ function playClickSound() {
     snd.play().catch(() => {});
   }
 }
+const resetBtn = document.createElement("button");
+  resetBtn.textContent = "🔄";
+  resetBtn.onclick = () => {
+    counterValue = 0;
+    updateCounter();
+  };
+  document.querySelector("button[onclick='generateList()']").after(resetBtn);
+
+  // Show correct value on load
+  updateCounter();
 
 window.onload = generateList;
 </script>
