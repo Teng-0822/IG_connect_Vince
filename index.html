@@ -87,18 +87,19 @@
 <body>
 
 <h2>Instagram User List</h2>
-<button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
-<button onclick="resetCounter()">🔄 Reset Count</button>
-<br>
 <div id="userList">Loading...</div>
+<br>
+<button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
+<button onclick="pushToSheet()">🔼 Push to Sheet</button>
+<button onclick="resetCounter()">🔄 Reset Count</button>
 
 <!-- Navigation Controls -->
 <div id="navControls">
-  <button onclick="prevUser(); openCurrentIG()">⬅️</button>
+  <button onclick="prevUser()">⬅️</button>
   <span id="currentUsername">—</span>
   <button onclick="openCurrentIG()">IG</button>
   <label><input type="checkbox" id="currentCheckbox"></label>
-  <button onclick="nextUser(); openCurrentIG()">➡️</button>
+  <button onclick="nextUser()">➡️</button>
 </div>
 
 <!-- Counter -->
@@ -111,7 +112,7 @@
 
 <script>
 const RAW_API = "https://script.google.com/macros/s/AKfycbxIv_GXdfYAY_vdJLzQ5y8uunDa3XvORxwe00WF4S09Qv1T8fklDqNUZF1d-TjKGCyW_w/exec";
-const API_URL = RAW_API; // direct fetch for performance
+const API_URL = RAW_API;
 
 let currentUsers = [];
 let checkboxStates = {};
@@ -188,8 +189,7 @@ function prevUser() {
   }
 }
 
-async function nextUser() {
-  await pushSingleToSheet(currentIndex);
+function nextUser() {
   if (currentIndex < currentUsers.length - 1) {
     currentIndex++;
     updateCurrentView();
@@ -216,22 +216,30 @@ function updateCounter() {
   counterEl.style.backgroundColor = counterValue >= 9 ? "red" : "green";
 }
 
-async function pushSingleToSheet(index) {
-  const update = {
-    username: currentUsers[index],
-    checked: checkboxStates[index],
-    row: index + 1
-  };
+async function pushToSheet() {
+  const updates = currentUsers.map((username, i) => ({
+    username: username,
+    checked: checkboxStates[i],
+    row: i + 1
+  }));
 
   try {
-    await fetch(API_URL, {
+    const res = await fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify([update]),
-      cache: "no-store"
+      body: JSON.stringify(updates),
+      headers: {
+        "Content-Type": "application/json"
+      }
     });
+
+    const result = await res.text();
+    if (res.ok && result.includes("Updated")) {
+      alert("✅ Pushed successfully to Google Sheet!");
+    } else {
+      alert("❌ Push failed: " + result);
+    }
   } catch (e) {
-    console.warn("❌ Push error at index", index, e.message);
+    alert("❌ Push error: " + e.message);
   }
 }
 
