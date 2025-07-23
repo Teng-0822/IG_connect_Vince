@@ -214,7 +214,9 @@
           else counterValue = Math.max(0, counterValue - 1);
           updateCounterDisplay();
           playClickSound();
+          updateSheetCheckbox(currentUsers[index], checkbox.checked);
         });
+
 
         row.appendChild(checkbox);
         row.appendChild(btn);
@@ -282,6 +284,21 @@
         if (e.target.type === "checkbox") playClickSound();
       });
     };
+
+    function updateSheetCheckbox(username, checked) {
+        const url = "https://script.google.com/macros/s/AKfycbxMD27JCd6tgWVsMWE6e-54mzwbS73cl_tiM-skbcBCXkKeCeUtoDOsG3MH6rD-UxMsCg/exec"; // ← Replace with your deployed Apps Script URL
+      
+        fetch(url, {
+          method: "POST",
+          body: JSON.stringify({ username, checked }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(res => res.text())
+        .then(msg => console.log("✅ Sheet updated:", msg))
+        .catch(err => console.error("❌ Failed to update sheet:", err));
+      }
   </script>
 
 </body>
