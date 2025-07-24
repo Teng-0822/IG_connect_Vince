@@ -314,10 +314,10 @@ async function pushToSheet() {
     if (res.ok && result.includes("Updated")) {
       toast("✅ Pushed successfully to Google Sheet!");
     } else {
-      toast("❌ Push failed");
+      //toast("❌ Push failed");
     }
   } catch (e) {
-    toast("❌ Push error");
+    //toast("❌ Push error");
   }
 }
 
