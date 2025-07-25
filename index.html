@@ -204,13 +204,15 @@ async function generateList() {
     checkboxStates[index] = user.checked;
     
     // ✅ Modify to track counted checkboxes
-    checkbox.addEventListener("change", () => {
-      checkboxStates[index] = checkbox.checked;
+   checkbox.addEventListener("change", () => {
+   checkboxStates[index] = checkbox.checked;
     
-      // Only add +1 if it was not already counted and now it's checked
       if (checkbox.checked && !countedSet.has(index)) {
         counterValue++;
         countedSet.add(index);
+      } else if (!checkbox.checked && countedSet.has(index)) {
+        counterValue = Math.max(0, counterValue - 1);
+        countedSet.delete(index);
       }
     
       updateCounter();
@@ -287,6 +289,9 @@ currentCheckbox.addEventListener("change", () => {
   if (isChecked && !countedNavChecks.has(currentIndex)) {
     counterValue++;
     countedNavChecks.add(currentIndex);
+  } else if (!isChecked && countedNavChecks.has(currentIndex)) {
+    counterValue = Math.max(0, counterValue - 1);
+    countedNavChecks.delete(currentIndex);
   }
 
   updateCounter();
