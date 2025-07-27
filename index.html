@@ -46,6 +46,10 @@
       padding: 20px 15px;
       font-size: 18px;
     }
+    .navi-btn {
+      padding: 20px 15px;
+      font-size: 12px;
+    }
     #navControls {
       position: fixed;
       bottom: 20px;
@@ -129,11 +133,11 @@
 <body>
 
 <h2>Instagram User List</h2>
-<button class="nav-btn" onclick="copyCheckboxStates()">📋 Copy Check</button>
-<button class="nav-btn" onclick="pushToSheet(); resetCounter()">🔄 Reset Count</button>
-<button class="nav-btn" onclick="generateList()">🔃 Fetch</button>
-<button class="nav-btn" onclick="runNextContainer()">Next Cont</button>
-
+<button class="navi-btn" onclick="copyCheckboxStates()">📋 Copy Check</button>
+<button class="navi-btn" onclick="pushToSheet(); resetCounter()">🔄 Reset Count</button>
+<button class="navi-btn" onclick="generateList()">🔃 Fetch</button>
+<button class="navi-btn" onclick="runNextContainer()">Next Cont</button>
+<button class="navi-btn" onclick="Tunnelbear()">Tunnel</button>
  <!-- <button class="nav-btn" onclick="pushToSheet()">🔼 Push to Sheet</button> -->
 <br>
 <div id="userList">🔃 Loading data...</div>
@@ -161,6 +165,9 @@
 <script>
 function runNextContainer() {
     window.location.href = "shortcuts://run-shortcut?name=Next%20container";
+  }
+function Tunnelbear() {
+    window.location.href = "shortcuts://run-shortcut?name=Tunnelbear";
   }
   
 const RAW_API = "https://script.google.com/macros/s/AKfycbzuhqBYLvz26q9DaxpE3QLzuAqg1T2oHDxAsg6-4ZIzygzMQ-lIGalEwbTfrFwpxsYJ/exec";
