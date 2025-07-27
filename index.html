@@ -129,10 +129,12 @@
 <body>
 
 <h2>Instagram User List</h2>
-<button onclick="copyCheckboxStates()">📋 Copy TRUE/FALSE</button>
-<button onclick="pushToSheet()">🔼 Push to Sheet</button>
-<button onclick="resetCounter()">🔄 Reset Count</button>
-<button onclick="generateList()">🔃 Fetch</button>
+<button class="nav-btn" onclick="copyCheckboxStates()">📋 Copy Check</button>
+<button class="nav-btn" onclick="pushToSheet(); resetCounter()">🔄 Reset Count</button>
+<button class="nav-btn" onclick="generateList()">🔃 Fetch</button>
+<button class="nav-btn" onclick="runNextContainer()">Next Cont</button>
+
+ <!-- <button class="nav-btn" onclick="pushToSheet()">🔼 Push to Sheet</button> -->
 <br>
 <div id="userList">🔃 Loading data...</div>
 
@@ -157,6 +159,10 @@
 </audio>
 
 <script>
+function runNextContainer() {
+    window.location.href = "shortcuts://run-shortcut?name=Next%20container";
+  }
+  
 const RAW_API = "https://script.google.com/macros/s/AKfycbzuhqBYLvz26q9DaxpE3QLzuAqg1T2oHDxAsg6-4ZIzygzMQ-lIGalEwbTfrFwpxsYJ/exec";
 const API_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_API);
 
