@@ -130,50 +130,56 @@
     }
 
     .floating-btn, .floating-span, .floating-checkbox {
-    position: fixed;
-    background: #90EE90;
-    padding: 16px;
-    font-size: 26px;
-    border-radius: 50px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 999;
-    text-align: center;
-    user-select: none;
-    touch-action: none;
-  }
+      position: fixed;
+      background: #90EE90;
+      padding: 16px;
+      font-size: 26px;
+      border-radius: 50px;
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0); /* REMOVE SHADOW to eliminate edge artifacts */
+      z-index: 999;
+      text-align: center;
+      user-select: none;
+      touch-action: none;
+      margin: 0; /* Prevent any margin spacing */
+      border: none; /* Avoid any border causing bleed */
+      box-sizing: border-box;
+      transform: translateZ(0); /* Force GPU rendering to fix sub-pixel issues */
+    }
 
-  #btnPrev {
-    bottom: 40px;
-    right: 80px;
-  }
-
-  #btnNext {
-    bottom: 40px;
-    right: 10px;
-  }
-
-  #btnIG {
-    bottom: 200px;
-    right: 10px;
-  }
-
-  #currentUsername {
-    position: fixed;
-    bottom: 120px;
+    #btnPrev {
+    bottom: 50px;
     right: 100px;
-    background: white;
-    padding: 6px 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  }
+    }
+    
+    #btnNext {
+      bottom: 50px;
+      right: 10px;
+    }
+    
+    #btnIG {
+      bottom: 130px;
+      right: 10px;
+    }
+    
+    #currentUsername {
+      position: fixed;
+      bottom: 130px;
+      right: 100px;
+      background: white;
+      padding: 6px 10px;
+      border-radius: 8px;
+      box-shadow: none;
+      transform: translateZ(0);
+    }
+    
+    #currentCheckbox {
+      position: fixed;
+      bottom: 90px;
+      right: 40px;
+      transform: scale(3.5);
+      accent-color: green;
+    }
 
-  #currentCheckbox {
-    position: fixed;
-    bottom: 150px;
-    right: 35px;
-    transform: scale(3.5);
-    accent-color: green;
-  }
   </style>
 </head>
 <body>
