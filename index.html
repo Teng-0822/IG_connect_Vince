@@ -438,21 +438,24 @@ document.addEventListener("change", e => {
 });
 
 function playClickSound() {
-  const original = document.getElementById("clickSound");
-  if (!original) return;
+  const snd = document.getElementById("clickSound");
+  if (!snd) return;
 
-  // Clone the <audio> node to allow overlapping play
-  const clone = original.cloneNode(true);
-  clone.play().catch(() => {}); // prevent uncaught errors
+  try {
+    snd.pause();
+    snd.currentTime = 0;
+    snd.play().catch(() => {});
+  } catch (e) {
+    console.warn("Audio play error:", e);
+  }
 }
 
-// Use `touchstart` for iOS, `click` for desktop
-document.addEventListener("touchstart", playClickSound, { passive: true });
-document.addEventListener("click", playClickSound);
-document.addEventListener("change", e => {
-  if (e.target.type === "checkbox") playClickSound();
+// Use `click` for better iOS reliability
+document.addEventListener("click", e => {
+  if (e.target.tagName === "BUTTON" || e.target.type === "checkbox") {
+    playClickSound();
+  }
 });
-
   
 updateCounter();
 window.onload = generateList;
