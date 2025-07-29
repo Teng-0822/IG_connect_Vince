@@ -182,20 +182,20 @@
 
 
 .navis-btn {
-    padding: 10px;
     width: 100%;
+    height: 80px; /* Set desired height */
     border: none;
-    background: #f0f0f0;
+    background-image: url("tenor.gif");
+    background-repeat: repeat;
+    background-size: auto; /* Or use 'contain', 'cover' if preferred */
+    background-position: center;
     border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 0; /* Hide text if using background only */
   }
 
-  .navis-btn img {
-      height: 40px;
-      display: block;
-      margin: 0 auto;
-  }
+  
   </style>
 </head>
 <body>
@@ -206,7 +206,7 @@
 <button class="navi-btn" onclick="generateList()">🔃 Fetch</button>
 <br>
 <button class="navis-btn" onclick="runNextContainer()">
-  <img src="tenor.gif" alt="Walking animation" />
+ <!-- <img src="tenor.gif" alt="Walking animation" />-->
 </button>
  <!-- <button class="nav-btn" onclick="pushToSheet()">🔼 Push to Sheet</button> -->
 <br>
