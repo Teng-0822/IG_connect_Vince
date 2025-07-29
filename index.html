@@ -228,8 +228,9 @@
 
 <!-- Sound -->
 <audio id="clickSound" preload="auto">
-  <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YaQAAACAgICAgICAgICAgICAgICAf39/f39/f39/f3+AgICAgICAgICAf3+AgICAf3+AgICAgICAgH9/f3+AgH9/f3+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=" type="audio/wav">
+  <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YaQAAABfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw==" type="audio/wav">
 </audio>
+
 
 <script>
 function runNextContainer() {
@@ -431,7 +432,7 @@ function toast(msg) {
   }, 3000);
 }
 
-document.addEventListener("click", playClickSound);
+document.addEventListener("touchstart", playClickSound, { passive: true });
 document.addEventListener("change", e => {
   if (e.target.type === "checkbox") playClickSound();
 });
@@ -440,9 +441,14 @@ function playClickSound() {
   const snd = document.getElementById("clickSound");
   if (snd) {
     snd.currentTime = 0;
-    snd.play().catch(() => {});
+    snd.play().catch(() => {}); // silently fail if blocked
   }
 }
+
+document.addEventListener("touchstart", playClickSound, { passive: true });
+document.addEventListener("change", e => {
+  if (e.target.type === "checkbox") playClickSound();
+});
 
 updateCounter();
 window.onload = generateList;
