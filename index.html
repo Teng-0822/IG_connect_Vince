@@ -228,8 +228,9 @@
 
 <!-- Sound -->
 <audio id="clickSound" preload="auto">
-  <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YaQAAABfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw==" type="audio/wav">
+  <source src="data:audio/wav;base64,UklGRiIAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YYAAAACAgICAgICAf39/f39/f3+AgICAgH9/f3+AgH9/f3+AgICAf39/f3+AgICAf39/f3+AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=" type="audio/wav">
 </audio>
+
 
 
 <script>
@@ -438,18 +439,22 @@ document.addEventListener("change", e => {
 });
 
 function playClickSound() {
-  const snd = document.getElementById("clickSound");
-  if (snd) {
-    snd.currentTime = 0;
-    snd.play().catch(() => {}); // silently fail if blocked
-  }
+  const original = document.getElementById("clickSound");
+  if (!original) return;
+
+  // Clone the <audio> node to allow overlapping play
+  const clone = original.cloneNode(true);
+  clone.play().catch(() => {}); // prevent uncaught errors
 }
 
+// Use `touchstart` for iOS, `click` for desktop
 document.addEventListener("touchstart", playClickSound, { passive: true });
+document.addEventListener("click", playClickSound);
 document.addEventListener("change", e => {
   if (e.target.type === "checkbox") playClickSound();
 });
 
+  
 updateCounter();
 window.onload = generateList;
 </script>
