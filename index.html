@@ -384,6 +384,9 @@ currentCheckbox.addEventListener("change", () => {
 function updateCounter() {
   counterEl.textContent = counterValue;
   counterEl.style.backgroundColor = counterValue >= 9 ? "red" : "green";
+
+  localStorage.setItem("counterValue", counterValue);
+  localStorage.setItem("countedNavChecks", JSON.stringify(Array.from(countedNavChecks)));
 }
 
 async function pushToSheet() {
@@ -456,6 +459,18 @@ document.addEventListener("click", e => {
     playClickSound();
   }
 });
+
+const savedCounter = parseInt(localStorage.getItem("counterValue"));
+if (!isNaN(savedCounter)) {
+  counterValue = savedCounter;
+}
+
+const savedChecks = localStorage.getItem("countedNavChecks");
+if (savedChecks) {
+  try {
+    countedNavChecks = new Set(JSON.parse(savedChecks));
+  } catch {}
+}
   
 updateCounter();
 window.onload = generateList;
