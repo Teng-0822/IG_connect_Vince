@@ -201,9 +201,9 @@
 <body>
 
 <h2>Instagram User List</h2>
-<button class="navi-btn" onclick="playClickSound(); copyCheckboxStates()">📋 Copy Check</button>
-<button class="navi-btn" onclick="playClickSound(); pushToSheet(); resetCounter()">🔄 Reset Count</button>
-<button class="navi-btn" onclick="playClickSound(); generateList()">🔃 Fetch</button>
+<button class="navi-btn" onclick="copyCheckboxStates()">📋 Copy Check</button>
+<button class="navi-btn" onclick="pushToSheet(); resetCounter()">🔄 Reset Count</button>
+<button class="navi-btn" onclick="generateList()">🔃 Fetch</button>
 <br>
 <button class="navis-btn" onclick="playClickSound(); runNextContainer()">
  <!-- <img src="tenor.gif" alt="Walking animation" />-->
@@ -214,11 +214,11 @@
 
 <!-- Navigation Controls -->
 
-<button id="btnPrev" class="floating-btn" onclick="playClickSound(); prevUser(); pushToSheet(); openCurrentIG()">⬅️</button>
+<button id="btnPrev" class="floating-btn" onclick="prevUser(); pushToSheet(); openCurrentIG()">⬅️</button>
 <span id="currentUsername">—</span>
-<button id="btnIG" class="floating-btn" onclick="playClickSound(); openCurrentIG()">IG</button>
+<button id="btnIG" class="floating-btn" onclick="openCurrentIG()">IG</button>
 <input type="checkbox" id="currentCheckbox">
-<button id="btnNext" class="floating-btn" onclick="playClickSound(); nextUser(); pushToSheet(); openCurrentIG()">➡️</button>
+<button id="btnNext" class="floating-btn" onclick="nextUser(); pushToSheet(); openCurrentIG()">➡️</button>
 
 <!-- Counter -->
 <div id="floatingCounter">0</div>
@@ -441,22 +441,24 @@ document.addEventListener("change", e => {
 });
 
 function playClickSound() {
-  const original = document.getElementById("clickSound");
-  if (!original) return;
+  const snd = document.getElementById("clickSound");
+  if (!snd) return;
 
-  const snd = original.cloneNode(); // Fresh copy for instant playback
-  snd.volume = original.volume;
-  snd.play().catch(() => {}); // Avoid breaking on autoplay block
+  try {
+    snd.pause();
+    snd.currentTime = 0;
+    snd.play().catch(() => {});
+  } catch (e) {
+    console.warn("Audio play error:", e);
+  }
 }
 
+// Use click for better iOS reliability
 document.addEventListener("click", e => {
-  const t = e.target;
-  if (t.tagName === "BUTTON" || (t.tagName === "INPUT" && t.type === "checkbox")) {
+  if (e.target.tagName === "BUTTON" || e.target.type === "checkbox") {
     playClickSound();
   }
 });
-
-
 
 const savedCounter = parseInt(localStorage.getItem("counterValue"));
 if (!isNaN(savedCounter)) {
