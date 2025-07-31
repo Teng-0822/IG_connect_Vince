@@ -441,24 +441,24 @@ document.addEventListener("change", e => {
 });
 
 function playClickSound() {
-  const snd = document.getElementById("clickSound");
-  if (!snd) return;
+  const original = document.getElementById("clickSound");
+  if (!original) return;
 
   try {
-    snd.pause();
-    snd.currentTime = 0;
-    snd.play().catch(() => {});
+    const snd = original.cloneNode(true); // Create a new instance
+    snd.volume = original.volume;
+    snd.play().catch(() => {}); // Suppress any play errors
   } catch (e) {
     console.warn("Audio play error:", e);
   }
 }
 
-// Use `click` for better iOS reliability
 document.addEventListener("click", e => {
   if (e.target.tagName === "BUTTON" || e.target.type === "checkbox") {
     playClickSound();
   }
 });
+
 
 const savedCounter = parseInt(localStorage.getItem("counterValue"));
 if (!isNaN(savedCounter)) {
