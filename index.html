@@ -3,205 +3,257 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teng Box</title>
+  <title>˚ʚ♡ɞ˚ Myra ˚ʚ♡ɞ˚</title>
+
   <style>
-    body {
-      font-family: "Georgia", serif;
-      padding: 16px;
-      background: #f4f1e1 url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-      color: #3b2f2f;
-    }
+  
+  @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
 
-    h2 {
-      font-family: 'Garamond', serif;
-      font-size: 28px;
-      margin-bottom: 20px;
-      color: #4b382a;
-      text-shadow: 1px 1px #d7c7b3;
-    }
+  html, body {
+    touch-action: manipulation;
+  }
 
-    button {
-      background-color: #7e5a3a;
-      color: #fffbe6;
-      padding: 10px 16px;
-      margin: 6px;
-      border: 2px solid #4b382a;
-      border-radius: 6px;
-      font-family: "Georgia", serif;
-      cursor: pointer;
-      box-shadow: 2px 2px 0 #4b382a;
-    }
+  body {
+    font-family: 'MedievalSharp', cursive;
+    padding: 20px;
+    background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+    background-color: #f5f0e6;
+    color: #3b2f1d;
+  }
 
-    button:hover {
-      background-color: #5c3c24;
-    }
+  h2 {
+    text-align: center;
+    font-size: 36px;
+    color: #7b4b1c;
+    text-shadow: 2px 2px #d4af37;
+    margin-bottom: 30px;
+  }
 
-    .user-row {
-      background: #fffbe6;
-      border: 1px solid #d2b48c;
-      padding: 10px;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: 6px;
-    }
+  .user-row {
+    background: #fff9f0;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid #a97c50;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(80, 40, 10, 0.4);
+  }
 
-    .user-row.highlight {
-      background-color: #f7e5ad !important;
-    }
+  .user-row span {
+    flex: 1;
+    margin-left: 12px;
+    color: #4a3213;
+  }
 
-    .user-row span {
-      flex: 1;
-      margin-left: 12px;
-    }
+  .username {
+    font-weight: bold;
+    font-size: 18px;
+  }
 
-    label input[type="checkbox"], input[type="checkbox"] {
-      transform: scale(1.8);
-      margin: 5px;
-      cursor: pointer;
-      accent-color: #7e5a3a;
-    }
+  .status {
+    margin-left: 12px;
+    font-style: italic;
+    color: #b08c4e;
+  }
 
-    #floatingCounter {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 70px;
-      height: 70px;
-      background-color: #6b8e23;
-      color: white;
-      font-size: 28px;
-      font-weight: bold;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
+  button {
+    margin: 5px;
+    padding: 10px 14px;
+    border: 2px solid #5c3b0b;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #8b5e3c, #c0955d);
+    color: #fff6e0;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 #ffd382, 0 3px 6px rgba(0, 0, 0, 0.3);
+  }
 
-    #currentUsername {
-      position: fixed;
-      bottom: 130px;
-      right: 110px;
-      background: #7e5a3a;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
-      writing-mode: vertical-rl;
-      text-orientation: upright;
-      font-size: 16px;
-      height: 160px;
-      text-align: center;
-    }
+  button:hover {
+    background: linear-gradient(145deg, #b67638, #e6b76e);
+    color: #fffaf0;
+  }
 
-    #currentCheckbox {
-      position: fixed;
-      bottom: 150px;
-      right: 30px;
-      transform: scale(2.5);
-      accent-color: #7e5a3a;
-    }
+  .nav-btn, .navi-btn {
+   font-size: 14px;
+  padding: 6px 12px;
+  flex: 1;
+  white-space: nowrap;
+  }
 
-    .floating-btn {
-      position: fixed;
-      padding: 12px 16px;
-      border-radius: 50px;
-      background-color: #7e5a3a;
-      color: white;
-      font-size: 20px;
-      z-index: 999;
-      cursor: pointer;
-      border: none;
-    }
+  #navControls {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: #f4ead0;
+    border: 4px ridge #d4af37;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 10px rgba(60, 30, 10, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    z-index: 999;
+    width: 300px;
+  }
 
-    #btnPrev {
-      bottom: 50px;
-      right: 100px;
-    }
+  .nav-top-row, .nav-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
 
-    #btnNext {
-      bottom: 50px;
-      right: 10px;
-    }
+  #currentUsername {
+    font-weight: bold;
+    font-size: 18px;
+    background-color: #f0e6cc;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: left;
+    border: 3px double #a97c50;
+    color: #6d4a1a;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    #btnIG {
-      bottom: 210px;
-      right: 10px;
-    }
+  #igLinkBtn {
+    flex: 0 0 auto;
+    font-size: 14px;
+    padding: 6px 10px;
+  }
 
-    .medieval-button {
-      display: inline-block;
-      width: 100%;
-      height: 60px;
-      font-size: 20px;
-      text-align: center;
-      line-height: 60px;
-      background: #c2b280;
-      color: #4b382a;
-      border: 2px solid #4b382a;
-      border-radius: 10px;
-      font-family: "Georgia", serif;
-      box-shadow: 2px 2px 0 #4b382a;
-    }
+  #navCheckbox {
+    transform: scale(1.8);
+    margin: 0;
+    cursor: pointer;
+    accent-color: #c09f58;
+  }
 
-    #toast {
-      visibility: hidden;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      padding: 14px;
-      border-radius: 6px;
-      position: fixed;
-      z-index: 9999;
-      left: 50%;
-      bottom: 30px;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
+  #floatingCounter {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 70px;
+    height: 70px;
+    background-color: #d4af37;
+    color: #3b2f1d;
+    font-size: 28px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    border: 4px solid #3b2f1d;
+  }
 
-    #toast.show {
-      visibility: visible;
-      opacity: 1;
-    }
+  #toast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #8b0000;
+    color: #fffaf0;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 99999;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, visibility 0s linear 0.5s;
+  }
+
+  #toast.show {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+  }
+
+  .user-row.highlight {
+    background-color: #efe4c0 !important;
+    border: 2px solid #d4af37;
+  }
+
+  #navControls input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  transform: scale(1.5);
+  margin: 0 10px;
+  accent-color: #8b5e3c; /* optional: match knight theme */
+  cursor: pointer;
+}
+
+  label input[type="checkbox"] {
+    transform: scale(6);
+    margin-top: 6px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    accent-color: #c09f58;
+  }
   </style>
 </head>
 <body>
 
 <h2>Instagram User List</h2>
-<button onclick="copyCheckboxStates()">📋 Copy Check</button>
-<button onclick="pushToSheet(); resetCounter()">🔄 Reset Count</button>
-<button onclick="generateList()">🔃 Fetch</button>
-<br><br>
-<button class="medieval-button" onclick="runNextContainer()">Next Container</button>
-<br><br>
-
+<button class="navi-btn" onclick="copyCheckboxStates()">📋 Copy Check</button>
+<button class="navi-btn" onclick="pushToSheet(); resetCounter()">🔄 Reset Count</button>
+<button class="navi-btn" onclick="generateList()">🔃 Fetch</button>
+<br>
+<button class="navi-btn" style="width: 100%; font-size: 20px;" onclick="runNextContainer()">
+  ˚ʚ♡ɞ˚Next Cont˚ʚ♡ɞ˚
+</button>
+ <!-- <button class="nav-btn" onclick="pushToSheet()">🔼 Push to Sheet</button> -->
+<br>
 <div id="userList">🔃 Loading data...</div>
 
-<button id="btnPrev" class="floating-btn" onclick="prevUser(); pushToSheet(); openCurrentIG()">⬅️</button>
-<span id="currentUsername">—</span>
-<button id="btnIG" class="floating-btn" onclick="openCurrentIG()">IG</button>
-<input type="checkbox" id="currentCheckbox">
-<button id="btnNext" class="floating-btn" onclick="nextUser(); pushToSheet(); openCurrentIG()">➡️</button>
+<!-- Navigation Controls -->
+<div id="navControls">
+  <div class="nav-top-row">
+    <div id="currentUsername">[Username]</div>
+    <button id="igLinkBtn" onclick="openCurrentIG()">Open IG</button>
+    <input type="checkbox" id="currentCheckbox">
+  </div>
+  <div class="nav-bottom-row">
+    <button class="nav-btn" id="prevBtn" onclick="prevUser(); pushToSheet(); openCurrentIG()">⬅ Prev</button>
+    <button class="navi-btn" id="continueBtn" onclick="runNextContainer()">✅ Next Cont</button>
+    <button class="nav-btn" id="nextBtn" onclick="nextUser(); pushToSheet(); openCurrentIG()">Next ➡</button>
+  </div>
+</div>
 
+
+
+<!-- Counter -->
 <div id="floatingCounter">0</div>
+
+<!-- Toast -->
 <div id="toast">Toast</div>
+
 
 <script>
 function runNextContainer() {
-  window.location.href = "shortcuts://run-shortcut?name=Next%20container";
-}
-
-const RAW_API = "https://script.google.com/macros/s/AKfycbxxw9NFMCtNA5e9928W3yiP91JpfUnKWNFQ-RCCrzM3rRxaTJIK987sW_46QmrAjKYT/exec";
+    window.location.href = "shortcuts://run-shortcut?name=Next%20container";
+  }
+function Tunnelbear() {
+    window.location.href = "shortcuts://run-shortcut?name=Tunnelbear";
+  }
+  
+const RAW_API = "https://script.google.com/macros/s/AKfycbxRzL7ZX2gfZUVCkOOtvxEprNure2zJhSqqb73J7Xz8zHpn_Gs7Z83JzzWzv-6OXclfxQ/exec";
 const API_URL = "https://corsproxy.io/?" + encodeURIComponent(RAW_API);
 
 let currentUsers = [];
 let checkboxStates = {};
 let currentIndex = 0;
 let counterValue = 0;
-let countedNavChecks = new Set();
+let countedNavChecks = new Set(); // ONLY track what was checked in nav
 
 const listContainer = document.getElementById("userList");
 const currentNameEl = document.getElementById("currentUsername");
@@ -222,13 +274,15 @@ async function generateList() {
     return;
   }
 
-  if (!users.length) {
-    listContainer.innerHTML = `<p style="color:orange;">⚠️ No usernames found.</p>`;
+  if (!users || !users.length) {
+    listContainer.innerHTML = `<p style="color:orange;">⚠️ No usernames found in sheet.</p>`;
     return;
   }
 
   listContainer.innerHTML = "";
-  currentUsers = users.map(u => u.username);
+  //currentUsers = users.map(u => u.username); ito orig
+  currentUsers = users;
+
   checkboxStates = {};
 
   users.forEach((user, index) => {
@@ -240,26 +294,34 @@ async function generateList() {
     checkbox.checked = user.checked;
     checkbox.dataset.index = index;
     checkboxStates[index] = user.checked;
-
-    checkbox.addEventListener("change", () => {
-      checkboxStates[index] = checkbox.checked;
-      if (checkbox.checked && !countedNavChecks.has(index)) {
+    
+    // ✅ Modify to track counted checkboxes
+   checkbox.addEventListener("change", () => {
+   checkboxStates[index] = checkbox.checked;
+    
+      if (checkbox.checked && !countedSet.has(index)) {
         counterValue++;
-        countedNavChecks.add(index);
-      } else if (!checkbox.checked && countedNavChecks.has(index)) {
+        countedSet.add(index);
+      } else if (!checkbox.checked && countedSet.has(index)) {
         counterValue = Math.max(0, counterValue - 1);
-        countedNavChecks.delete(index);
+        countedSet.delete(index);
       }
+    
       updateCounter();
     });
 
     const name = document.createElement("span");
     name.textContent = user.username;
 
+    const status = document.createElement("span");
+    status.textContent = user.status;
+
     const btn = document.createElement("button");
     btn.textContent = "Open IG";
     btn.onclick = () => {
       window.open(`https://instagram.com/${user.username}`, "_blank");
+    
+      // Make this the selected user
       currentIndex = index;
       localStorage.setItem("currentIndex", currentIndex);
       updateCurrentView();
@@ -268,6 +330,7 @@ async function generateList() {
     row.appendChild(checkbox);
     row.appendChild(btn);
     row.appendChild(name);
+    row.appendChild(status);
     listContainer.appendChild(row);
   });
 
@@ -279,8 +342,12 @@ async function generateList() {
 }
 
 function updateCurrentView() {
-  const username = currentUsers[currentIndex] || "—";
+  //const username = currentUsers[currentIndex] || "—"; ito orig
+  //currentNameEl.textContent = username;
+  const user = currentUsers[currentIndex];
+  const username = user?.username || "—";
   currentNameEl.textContent = username;
+
   currentCheckbox.checked = checkboxStates[currentIndex] || false;
 
   document.querySelectorAll(".user-row").forEach(row => row.classList.remove("highlight"));
@@ -288,28 +355,61 @@ function updateCurrentView() {
   if (currentRow) currentRow.classList.add("highlight");
 }
 
-function prevUser() {
-  if (currentIndex > 0) {
-    currentIndex--;
-    localStorage.setItem("currentIndex", currentIndex);
-    updateCurrentView();
+function nextUser() {
+  if (!currentUsers || currentUsers.length === 0) return;
+
+  let originalIndex = currentIndex;
+  do {
+    currentIndex++;
+  } while (
+    currentIndex < currentUsers.length &&
+    currentUsers[currentIndex].status === "Skip"
+  );
+
+  if (currentIndex >= currentUsers.length) {
+    currentIndex = originalIndex; // Revert if no valid next
+    return;
   }
+
+  localStorage.setItem("currentIndex", currentIndex);
+  updateCurrentView();
+
+  setTimeout(() => {
+    openCurrentIG();
+  }, 100); // Delay ensures user is selected before IG opens
 }
 
-function nextUser() {
-  if (currentIndex < currentUsers.length - 1) {
-    currentIndex++;
-    localStorage.setItem("currentIndex", currentIndex);
-    updateCurrentView();
+function prevUser() {
+  if (!currentUsers || currentUsers.length === 0) return;
+
+  let originalIndex = currentIndex;
+  do {
+    currentIndex--;
+  } while (
+    currentIndex >= 0 &&
+    currentUsers[currentIndex].status === "Skip"
+  );
+
+  if (currentIndex < 0) {
+    currentIndex = originalIndex; // Revert if no valid previous
+    return;
   }
+
+  localStorage.setItem("currentIndex", currentIndex);
+  updateCurrentView();
+
+  setTimeout(() => {
+    openCurrentIG();
+  }, 100);
 }
 
 function openCurrentIG() {
-  const username = currentUsers[currentIndex];
-  if (username) {
-    window.open(`https://instagram.com/${username}`, "_blank");
+  const user = currentUsers[currentIndex];
+  if (user && user.username) {
+    window.open(`https://instagram.com/${user.username}`, "_blank");
   }
 }
+
 
 currentCheckbox.addEventListener("change", () => {
   const isChecked = currentCheckbox.checked;
@@ -318,6 +418,7 @@ currentCheckbox.addEventListener("change", () => {
   const listCheckbox = document.querySelector(`.user-row input[data-index="${currentIndex}"]`);
   if (listCheckbox) listCheckbox.checked = isChecked;
 
+  // Only add +1 if just now checked in nav control and not already counted
   if (isChecked && !countedNavChecks.has(currentIndex)) {
     counterValue++;
     countedNavChecks.add(currentIndex);
@@ -331,10 +432,7 @@ currentCheckbox.addEventListener("change", () => {
 
 function updateCounter() {
   counterEl.textContent = counterValue;
-  counterEl.style.backgroundColor = counterValue >= 9 ? "red" : "#6b8e23";
-
-  localStorage.setItem("counterValue", counterValue);
-  localStorage.setItem("countedNavChecks", JSON.stringify(Array.from(countedNavChecks)));
+  counterEl.style.backgroundColor = counterValue >= 9 ? "red" : "green";
 }
 
 async function pushToSheet() {
@@ -352,9 +450,13 @@ async function pushToSheet() {
     });
     const result = await res.text();
     if (res.ok && result.includes("Updated")) {
-      toast("✅ Pushed to sheet!");
+      toast("✅ Pushed successfully to Google Sheet!");
+    } else {
+      //toast("❌ Push failed");
     }
-  } catch (e) {}
+  } catch (e) {
+    //toast("❌ Push error");
+  }
 }
 
 function copyCheckboxStates() {
@@ -366,7 +468,7 @@ function copyCheckboxStates() {
 
 function resetCounter() {
   counterValue = 0;
-  countedNavChecks.clear();
+  countedNavChecks.clear(); // Clear previous tracked checks
   updateCounter();
 }
 
@@ -379,20 +481,11 @@ function toast(msg) {
   }, 3000);
 }
 
-const savedCounter = parseInt(localStorage.getItem("counterValue"));
-if (!isNaN(savedCounter)) counterValue = savedCounter;
 
-const savedChecks = localStorage.getItem("countedNavChecks");
-if (savedChecks) {
-  try {
-    countedNavChecks = new Set(JSON.parse(savedChecks));
-  } catch {}
-}
 
 updateCounter();
 window.onload = generateList;
 </script>
+
 </body>
 </html>
-
-
