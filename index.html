@@ -215,6 +215,11 @@
 
 <!-- Navigation Controls -->
 <div id="navControls">
+  <div class="nav-top-extra">
+    <button onclick="window.open('https://instagram.com', '_blank')">Open IG</button>
+    <button onclick="checkIG()">Check IG</button>
+    <span id="igStatusBox" style="display:inline-block;width:20px;height:20px;border:2px solid #333;border-radius:4px;background-color:gray;"></span>
+  </div>
   <div class="nav-top-row">
     <div id="currentUsername">[Username]</div>
     <button id="igLinkBtn" onclick="openCurrentIG()">Open IG</button>
@@ -479,7 +484,20 @@ function toast(msg) {
   }, 3000);
 }
 
-
+async function checkIG() {
+  const box = document.getElementById("igStatusBox");
+  box.style.backgroundColor = "gray";
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch("https://www.instagram.com/", { mode: "no-cors", signal: controller.signal });
+    clearTimeout(timeoutId);
+    // If fetch didn't throw, consider IG accessible
+    box.style.backgroundColor = "green";
+  } catch (err) {
+    box.style.backgroundColor = "red";
+  }
+}
 
 updateCounter();
 window.onload = generateList;
@@ -487,5 +505,4 @@ window.onload = generateList;
 
 </body>
 </html>
-
 
