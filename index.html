@@ -11,6 +11,10 @@
 
   html, body {
     touch-action: manipulation;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   body {
@@ -50,6 +54,11 @@
   .username {
     font-weight: bold;
     font-size: 18px;
+    display: inline-block;
+    max-width: 140px; /* adjust width as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* "…" effect */
   }
 
   .status {
@@ -505,5 +514,6 @@ window.onload = generateList;
 
 </body>
 </html>
+
 
 
